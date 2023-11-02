@@ -10,19 +10,19 @@ namespace InventoryApi.Controllers
         [HttpPost]
         public ResponseBody CreateNewProvider()
         {
-            
+            return new ResponseBody { };
         }
 
         [HttpDelete("{id}")]
         public ResponseBody DeleteProvider(int id)
         {
-            
+            return new ResponseBody { };
         }
 
         [HttpGet]
         public ResponseBody GetAllProviders()
         {
-            
+            return new ResponseBody { };
         }
     }
 }
