@@ -2,7 +2,9 @@
 
 namespace InventoryApi.Controllers
 {
-    public class ElementsController
+    [ApiController]
+    [Route("element")]
+    public class ElementsController: Controller
     {
         [HttpPost]
         public ResponseBody CreateNewElement()

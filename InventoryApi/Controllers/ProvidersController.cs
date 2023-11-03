@@ -5,7 +5,7 @@ namespace InventoryApi.Controllers
 {
     [ApiController]
     [Route("providers")]
-    public class ProvidersController
+    public class ProvidersController: Controller
     {
         [HttpPost]
         public ResponseBody CreateNewProvider()

@@ -11,11 +11,7 @@ namespace InventoryApi
 {
     internal class Program
     {
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllers();
-            services.AddSwaggerGen();
-        }
+        
         static void Main(string[] args)
         {
             Host.CreateDefaultBuilder(args)
