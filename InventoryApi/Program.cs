@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using ConsoleApp1;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,9 +12,14 @@ namespace InventoryApi
 {
     internal class Program
     {
-        
         static void Main(string[] args)
         {
+            Console.WriteLine(args[0]);
+            using (var db = new ApplicationContext())
+            {
+                db.RecreateDb();
+            }
+
             Host.CreateDefaultBuilder(args)
                .ConfigureWebHostDefaults(webBuilder =>
                {

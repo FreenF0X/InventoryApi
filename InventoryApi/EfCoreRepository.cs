@@ -4,63 +4,58 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace InventoryApi
 {
-    public class EfCoreRepository: IRepository<Provider>
+    public class EfCoreRepository: IRepository, IDisposable
     {
-        
+        ApplicationContext db;
         public EfCoreRepository()
         {
-            
+            db = new ApplicationContext();
         }
 
-        public IEnumerable<Provider> GetDataList()
+        public List<TEntity> GetDataList<TEntity,TProperty>(Func<TEntity, bool> filter, Expression<Func<TEntity, TProperty>> property)
+            where TEntity : class
         {
-            using (var db = new ApplicationContext())
-            {
-                return db.Providers;
-            }
-            
+                return db.Set<TEntity>().Include(property).Where(filter).ToList();
         }
 
-        public Provider GetDataById(int id)
+        public TEntity GetDataById<TEntity>(int id)
+            where TEntity : class
         {
-            using (var db = new ApplicationContext())
-            {
-                return db.Providers.Find(id);
-            }
-            
+                return db.Find<TEntity>(id);
         }
 
 
-        public void Create(Provider provider)
+        public void Create<TEntity>(TEntity entity)
+            where TEntity : class
         {
-            using (var db = new ApplicationContext())
-            {
-                db.Providers.Add(provider);
-            }
-            
+                db.Add<TEntity>(entity);
+                db.SaveChanges();
         }
 
-        public void Update(Provider provider)
+        public void Update<TEntity>(int id, TEntity entity)
+            where TEntity : class
         {
-            using (var db = new ApplicationContext())
-            {
-                db.Entry(provider).State = EntityState.Modified;
-            }
-                
+                db.Entry<TEntity>(entity).State = EntityState.Modified;
+                db.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete<TEntity>(int id)
+            where TEntity : class
         {
-            using (var db = new ApplicationContext())
-            {
-                Provider provider = db.Providers.Find(id);
-                if (provider != null)
-                    db.Providers.Remove(provider);
-            }
+                var entity = db.Find<TEntity>(id);
+                if (entity != null)
+                    db.Remove<TEntity>(entity);
+                db.SaveChanges();
         }
 
+        public void Dispose()
+        {
+            db.Dispose();
+        }
     }
 }

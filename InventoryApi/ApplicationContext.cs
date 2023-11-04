@@ -11,7 +11,7 @@ namespace ConsoleApp1
     public class ApplicationContext : DbContext
     {
         public DbSet<Provider> Providers { get; set; }
-        public DbSet<Element> Elements { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         public ApplicationContext()
         {
@@ -22,7 +22,13 @@ namespace ConsoleApp1
             optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=Structures;Username=User;Password=1");
         }
 
-        public void RecreateDb()
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            //modelBuilder.Entity<Provider>().Navigation(e => e.Products).AutoInclude();
+            //modelBuilder.Entity<Product>().Navigation(e => e.Providers).AutoInclude();
+        }
+
+            public void RecreateDb()
         {
             Database.EnsureDeleted();
             Database.EnsureCreated();
