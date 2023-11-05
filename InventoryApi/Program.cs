@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography.X509Certificates;
 
 namespace InventoryApi
 {
@@ -14,8 +16,8 @@ namespace InventoryApi
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(args[0]);
-            using (var db = new ApplicationContext())
+            string ConnectionString = args[0];
+            using (var db = new ApplicationContext(ConnectionString))
             {
                 db.RecreateDb();
             }
@@ -24,7 +26,7 @@ namespace InventoryApi
                .ConfigureWebHostDefaults(webBuilder =>
                {
 
-                   webBuilder.UseStartup<Startup>();
+                   webBuilder.UseStartup<Startup>(builder => new Startup(ConnectionString));
                    webBuilder.UseUrls("http://*:8000");
                }).Build().Run();
         }

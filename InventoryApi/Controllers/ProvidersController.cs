@@ -10,9 +10,9 @@ namespace InventoryApi.Controllers
     {
         IRepository db;
 
-        public ProvidersController()
+        public ProvidersController(IRepository db)
         {
-            db = new EfCoreRepository();
+            this.db = db;
         }
 
         [HttpPost("{name}")]
@@ -33,8 +33,10 @@ namespace InventoryApi.Controllers
         }
 
         [HttpPost("update/{id}")]
-        public IActionResult UpdateProviderById(int id, Provider provider)
+        public IActionResult UpdateProviderById(int id, string newName)
         {
+            var provider = db.GetDataById<Provider>(id);
+            provider.Name = newName;
             db.Update(id, provider);
             db.Dispose();
             return this.Ok("Поставщик изменен.");

@@ -6,11 +6,21 @@ namespace InventoryApi
 {
     public class Startup
     {
+        string connectionString;
+        public Startup(string connString)
+        {
+            connectionString = connString;
+        }
+        
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
+            services.AddScoped<IRepository>(servises =>
+            {
+                return new EfCoreRepository(connectionString);
             });
             services.AddSwaggerGen();
         }

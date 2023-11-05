@@ -8,17 +8,14 @@ namespace InventoryApi
     public interface IRepository: IDisposable
     {
         List<T> GetDataList<T, TProperty>(Func<T,bool> filter, Expression<Func<T, TProperty>> property)
-            where T : class; // получение всех объектов
+            where T : class;
         T GetDataById<T>(int id)
-            where T : class; // получение одного объекта по id
+            where T : class;
         void Create<T>(T item)
-            where T : class; // создание объекта
+            where T : class;
         void Update<T>(int id, T item)
-            where T : class; // обновление объекта
+            where T : class;
         void Delete<T>(int id)
-            where T : class; // удаление объекта по id
-        //void Save();  // сохранение изменений
-
-
+            where T : class;
     }
 }

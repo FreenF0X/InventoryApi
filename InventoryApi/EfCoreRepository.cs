@@ -12,9 +12,9 @@ namespace InventoryApi
     public class EfCoreRepository: IRepository, IDisposable
     {
         ApplicationContext db;
-        public EfCoreRepository()
+        public EfCoreRepository(string conString)
         {
-            db = new ApplicationContext();
+            db = new ApplicationContext(conString);
         }
 
         public List<TEntity> GetDataList<TEntity,TProperty>(Func<TEntity, bool> filter, Expression<Func<TEntity, TProperty>> property)

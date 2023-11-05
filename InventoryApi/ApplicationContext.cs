@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System;
 using System.Collections;
 using InventoryApi.Entityes;
+using System.Data;
 
 namespace ConsoleApp1
 {
@@ -13,22 +14,19 @@ namespace ConsoleApp1
         public DbSet<Provider> Providers { get; set; }
         public DbSet<Product> Products { get; set; }
 
-        public ApplicationContext()
+        private string connectionString;
+
+        public ApplicationContext(string conString)
         {
-            
+            connectionString = conString;
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=Structures;Username=User;Password=1");
+            optionsBuilder.UseNpgsql(connectionString);
+            //"Host=localhost;Port=5432;Database=Structures;Username=User;Password=1"
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder.Entity<Provider>().Navigation(e => e.Products).AutoInclude();
-            //modelBuilder.Entity<Product>().Navigation(e => e.Providers).AutoInclude();
-        }
-
-            public void RecreateDb()
+        public void RecreateDb()
         {
             Database.EnsureDeleted();
             Database.EnsureCreated();

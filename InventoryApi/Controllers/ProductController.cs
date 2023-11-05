@@ -12,9 +12,9 @@ namespace InventoryApi.Controllers
     {
         IRepository db;
 
-        public ProductController()
+        public ProductController(IRepository db)
         {
-            db = new EfCoreRepository();
+            this.db = db;
         }
 
         [HttpPost("{name}")]
@@ -40,8 +40,11 @@ namespace InventoryApi.Controllers
         }
 
         [HttpPost("update/{id}")]
-        public IActionResult UpdateProductById(int id, Product product)
+        public IActionResult UpdateProductById(int id, string newName, int newQuantity)
         {
+            var product = db.GetDataById<Product>(id);
+            product.Name = newName;
+            product.Quantity = newQuantity;
             db.Update(id, product);
             db.Dispose();
             return this.Ok("Продукт изменен.");
