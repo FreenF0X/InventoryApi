@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters.Xml;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -16,19 +17,18 @@ namespace InventoryApi
     {
         static void Main(string[] args)
         {
-            string ConnectionString = args[0];
-            using (var db = new ApplicationContext(ConnectionString))
-            {
-                db.RecreateDb();
-            }
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Configuration.AddJsonFile("appsettings.json");
 
-            Host.CreateDefaultBuilder(args)
-               .ConfigureWebHostDefaults(webBuilder =>
-               {
+            //Host.CreateDefaultBuilder(args)
+            //   .ConfigureWebHostDefaults(webBuilder =>
+            //   {
+            //       //webBuilder.
+            //       webBuilder.UseStartup<Startup>(builder => new Startup());
+            //       webBuilder.UseUrls("http://*:8000");
+            //   }).Build().Run();
+            var app = builder.Build();
 
-                   webBuilder.UseStartup<Startup>(builder => new Startup(ConnectionString));
-                   webBuilder.UseUrls("http://*:8000");
-               }).Build().Run();
         }
     }
 }
