@@ -5,21 +5,22 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryApi
 {
     public class Startup
     {
-        string connectionString;
-        public Startup(string connString)
+        //string connectionString;
+        public Startup()
         {
-            connectionString = connString;
+            
         }
         
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddEndpointsApiExplorer();
-            
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -28,14 +29,12 @@ namespace InventoryApi
                     options.RequireHttpsMetadata = false;
                 });
 
+
             services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
-            services.AddScoped<IRepository>(servises =>
-            {
-                return new EfCoreRepository(connectionString);
-            });
+            services.AddScoped<IRepository, EfCoreRepository>();
             services.AddSwaggerGen();
         }
         public void Configure(IApplicationBuilder app)

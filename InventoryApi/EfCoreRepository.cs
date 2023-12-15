@@ -1,5 +1,4 @@
-﻿using ConsoleApp1;
-using InventoryApi.Entityes;
+﻿using InventoryApi.Entityes;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
@@ -12,9 +11,9 @@ namespace InventoryApi
     public class EfCoreRepository: IRepository, IDisposable
     {
         ApplicationContext db;
-        public EfCoreRepository(string conString)
+        public EfCoreRepository(ApplicationContext db)
         {
-            db = new ApplicationContext(conString);
+            this.db = db;
         }
 
         public List<TEntity> GetDataList<TEntity,TProperty>(Func<TEntity, bool> filter, Expression<Func<TEntity, TProperty>> property)

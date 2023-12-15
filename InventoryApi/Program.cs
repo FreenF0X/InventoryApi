@@ -1,4 +1,4 @@
-﻿using ConsoleApp1;
+﻿
 using InventoryApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
@@ -21,18 +21,18 @@ namespace InventoryApi
     {
         static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
-            builder.Configuration.AddJsonFile("appsettings.json");
-            builder.Configuration.GetConnectionString("TestDB");
-            builder.Build().Run();
-            //Host.CreateDefaultBuilder(args)
-            //   .ConfigureWebHostDefaults(webBuilder =>
-            //   {
-            //       //webBuilder.
-            //       webBuilder.UseStartup<Startup>();
-            //       //webBuilder.UseUrls("http://*:8000");
-            //   }).Build().Run();
-            
+            //var builder = WebApplication.CreateBuilder(args);
+            //builder.Configuration.AddJsonFile("appsettings.json");
+            //builder.Configuration.GetConnectionString("TestDB");
+            //builder.WebHost.UseStartup<Startup>();
+            //builder.Build().Run();
+            Host.CreateDefaultBuilder(args)
+               .ConfigureWebHostDefaults(webBuilder =>
+               {
+                   //webBuilder.
+                   webBuilder.UseStartup<Startup>();
+               }).Build().Run();
+
 
 
             //Host.CreateDefaultBuilder(args)
