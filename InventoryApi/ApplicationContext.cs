@@ -20,13 +20,13 @@ namespace InventoryApi
         {
             //connectionString = conString;
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
-            optionsBuilder.UseNpgsql(configuration.GetConnectionString("TestDB"));
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    IConfigurationRoot configuration = new ConfigurationBuilder()
+        //    .AddJsonFile("appsettings.json")
+        //    .Build();
+        //    optionsBuilder.UseNpgsql(configuration.GetConnectionString("TestDB"));
+        //}
 
         public void RecreateDb()
         {

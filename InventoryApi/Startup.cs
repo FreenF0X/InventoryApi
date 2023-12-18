@@ -11,23 +11,27 @@ namespace InventoryApi
 {
     public class Startup
     {
-        //string connectionString;
-        public Startup()
+        private IConfiguration Configuration { get; }
+        public Startup(IConfiguration config)
         {
-            
+            Configuration = config;
         }
         
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("TestDB")));
+            services.AddScoped<IRepository, EfCoreRepository>();
+
             services.AddEndpointsApiExplorer();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.Authority = "http://tmp.doker.ru:8080/realms/Test2";
-                    options.Audience = "account";
-                    options.RequireHttpsMetadata = false;
-                });
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(options =>
+            //    {
+            //        options.Authority = "http://*:8000";
+            //        options.Audience = "account";
+            //        options.RequireHttpsMetadata = false;
+            //    });
 
 
             services.AddControllers().AddJsonOptions(options =>

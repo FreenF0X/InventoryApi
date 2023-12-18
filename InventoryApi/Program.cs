@@ -29,7 +29,7 @@ namespace InventoryApi
             Host.CreateDefaultBuilder(args)
                .ConfigureWebHostDefaults(webBuilder =>
                {
-                   //webBuilder.
+                   webBuilder.UseUrls("http://*:8000");
                    webBuilder.UseStartup<Startup>();
                }).Build().Run();
 
