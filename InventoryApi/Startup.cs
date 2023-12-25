@@ -25,14 +25,6 @@ namespace InventoryApi
 
             services.AddEndpointsApiExplorer();
 
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddJwtBearer(options =>
-            //    {
-            //        options.Authority = "http://*:8000";
-            //        options.Audience = "account";
-            //        options.RequireHttpsMetadata = false;
-            //    });
-
 
             services.AddControllers().AddJsonOptions(options =>
             {
