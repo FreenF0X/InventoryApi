@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System;
 using System.Collections;
-using InventoryApi.Entityes;
 using System.Data;
 using Microsoft.Extensions.Configuration;
+using Domain.Models;
 
 namespace InventoryApi
 {
