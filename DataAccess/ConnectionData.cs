@@ -1,4 +1,4 @@
-﻿namespace InventoryApi
+﻿namespace DataAccess
 {
     public class ConnectionData
     {

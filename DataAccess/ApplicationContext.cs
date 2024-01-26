@@ -7,7 +7,7 @@ using System.Data;
 using Microsoft.Extensions.Configuration;
 using Domain.Models;
 
-namespace InventoryApi
+namespace DataAccess
 {
     public class ApplicationContext : DbContext
     {
