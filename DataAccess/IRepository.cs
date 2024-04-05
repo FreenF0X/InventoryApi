@@ -1,21 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace DataAccess
 {
-    public interface IRepository: IDisposable
+    public interface IRepository : IDisposable
     {
-        List<T> GetDataList<T, TProperty>(Func<T,bool> filter, Expression<Func<T, TProperty>> property)
+        Task<List<T>> GetAllDataListAsync<T, TProperty>(Expression<Func<T, bool>> filter, params Expression<Func<T, TProperty>>[] includes)
             where T : class;
-        T GetDataById<T>(int id)
+        Task<T> GetDataByIdAsync<T, TProperty>(Expression<Func<T, bool>> filter, params Expression<Func<T, TProperty>>[] includes)
             where T : class;
-        void Create<T>(T item)
+        Task<T> CreateAsync<T>(T item)
             where T : class;
-        void Update<T>(int id, T item)
+        Task<T> UpdateAsync<T>(T item)
             where T : class;
-        void Delete<T>(int id)
+        Task DeleteAsync<T>(int id)
             where T : class;
     }
 }

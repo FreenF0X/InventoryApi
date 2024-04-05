@@ -1,59 +1,69 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using DataAccess;
 
 namespace DataAccess
 {
-    public class EfCoreRepository: IRepository, IDisposable
+    public class EfCoreRepository : IRepository//,IDisposable
     {
-        ApplicationContext db;
+        ApplicationContext _db;
         public EfCoreRepository(ApplicationContext db)
         {
-            this.db = db;
+            _db = db;
         }
 
-        public List<TEntity> GetDataList<TEntity,TProperty>(Func<TEntity, bool> filter, Expression<Func<TEntity, TProperty>> property)
+        public async Task<List<TEntity>> GetAllDataListAsync<TEntity, TProperty>(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, TProperty>>[] includes)
             where TEntity : class
         {
-                return db.Set<TEntity>().Include(property).Where(filter).ToList();
+            IQueryable<TEntity> query = _db.Set<TEntity>();
+
+            foreach (var include in includes)
+                query = query.Include(include);
+
+            return await query.Where(filter).ToListAsync();
         }
 
-        public TEntity GetDataById<TEntity>(int id)
+        public async Task<TEntity?> GetDataByIdAsync<TEntity, TProperty>(Expression<Func<TEntity, bool>> filter, params Expression<Func<TEntity, TProperty>>[] includes)
+           where TEntity : class
+        {
+            IQueryable<TEntity> query = _db.Set<TEntity>();
+
+            foreach (var include in includes)
+                query = query.Include(include);
+
+            var result = await query.Where(filter).ToListAsync();
+
+            return result.FirstOrDefault();
+        }
+
+        public async Task<TEntity?> CreateAsync<TEntity>(TEntity entity)
             where TEntity : class
         {
-                return db.Find<TEntity>(id);
+            await _db.AddAsync<TEntity>(entity);
+            await _db.SaveChangesAsync();
+            return entity;
         }
 
-
-        public void Create<TEntity>(TEntity entity)
+        public async Task<TEntity?> UpdateAsync<TEntity>(TEntity entity)
             where TEntity : class
         {
-                db.Add<TEntity>(entity);
-                db.SaveChanges();
+            //_db.Entry<TEntity>(entity).State = EntityState.Modified;
+            _db.Set<TEntity>().Update(entity);//.State=EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return entity;
         }
 
-        public void Update<TEntity>(int id, TEntity entity)
+        public async Task DeleteAsync<TEntity>(int id)
             where TEntity : class
         {
-                db.Entry<TEntity>(entity).State = EntityState.Modified;
-                db.SaveChanges();
+            var entity = await _db.FindAsync<TEntity>(id);
+            if (entity != null)
+                _db.Remove<TEntity>(entity);
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete<TEntity>(int id)
-            where TEntity : class
+        public async void Dispose()
         {
-                var entity = db.Find<TEntity>(id);
-                if (entity != null)
-                    db.Remove<TEntity>(entity);
-                db.SaveChanges();
-        }
-
-        public void Dispose()
-        {
-            db.Dispose();
+            await _db.DisposeAsync();
         }
     }
 }

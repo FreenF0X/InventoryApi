@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using DataAccess;
+using BuisnessLogic;
 
 namespace InventoryApi
 {
@@ -26,6 +27,8 @@ namespace InventoryApi
 
             services.AddEndpointsApiExplorer();
 
+            services.AddScoped<ProductLogic>();
+            services.AddScoped<ProviderLogic>();
 
             services.AddControllers().AddJsonOptions(options =>
             {
@@ -33,6 +36,8 @@ namespace InventoryApi
             });
             services.AddScoped<IRepository, EfCoreRepository>();
             services.AddSwaggerGen();
+
+            services.AddAutoMapper(typeof(AppMappingProfile));
         }
         public void Configure(IApplicationBuilder app)
         {

@@ -1,71 +1,85 @@
-﻿using Domain.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
-using System.Linq;
-using DataAccess;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using System;
+using BuisnessLogic;
+using Domain.DtoModels;
 
-namespace InventoryApi.Controllers
+namespace TMS.Operations.Controllers
 {
     [ApiController]
-    [Route("Product")]
-    public class ProductController: Controller
+    [Route("products")]
+    public class ProductController : Controller
     {
-        IRepository db;
+        private readonly ProductLogic logic;
 
-        public ProductController(IRepository db)
+        public ProductController(ProductLogic logic)
         {
-            this.db = db;
-        }
-
-        [HttpPost("{name}")]
-        public IActionResult CreateNewProduct(string name, int quantity, int providerId)
-        {
-            var product = new Product { Name = name, Quantity = quantity, Providers = new List<Provider>() };
-            var provider = db.GetDataById<Provider>(providerId);
-            if (provider.Products == null)
-                provider.Products = new List<Product>();
-            provider.Products.Add(product);
-            product.Providers.Add(provider);
-            db.Create(product);
-            db.Dispose();
-            return this.Ok("Продукт добавлен.");
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(int id)
-        {
-            db.Delete<Product>(id);
-            db.Dispose();
-            return this.Ok("Продукт удален");
-        }
-
-        [HttpPost("update/{id}")]
-        public IActionResult UpdateProductById(int id, string newName, int newQuantity)
-        {
-            var product = db.GetDataById<Product>(id);
-            product.Name = newName;
-            product.Quantity = newQuantity;
-            db.Update(id, product);
-            db.Dispose();
-            return this.Ok("Продукт изменен.");
+            this.logic = logic;
         }
 
         [HttpGet]
-        public IActionResult GetAllProducts()
+        public async Task<IActionResult> GetAllProducts()
         {
-            //var prop = p => p.Products;
-            var response = db.GetDataList<Product,List<Provider>>(product => true,p => p.Providers);
-            db.Dispose();
-            return this.Ok(response);
+            try
+            {
+                return Ok(await logic.GetAllProductsAsync());
+            }
+            catch (Exception ex)
+            {
+                return this.Problem(ex.ToString());
+            }
         }
 
-        [HttpGet("byprovider/{providerid}")]
-        public IActionResult GetAllProductsByProvider(int providerid)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductById(int id)
         {
-            var response = db.GetDataList<Product, List<Provider>>(product => product.Providers.SingleOrDefault(provider => provider.Id == providerid) != null, p => p.Providers);
-            db.Dispose();
-            return this.Ok(response);
+            try
+            {
+                return this.Ok(await logic.GetProductByIdAsync(id));
+            }
+            catch (Exception ex)
+            {
+                return this.Problem(ex.ToString());
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateNewProduct(DtoProduct product)
+        {
+            try
+            {
+                return this.Ok(await logic.CreateNewProductAsync(product));
+            }
+            catch (Exception ex)
+            {
+                return this.Problem(ex.ToString());
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            try
+            {
+                return this.Ok(await logic.DeleteProductAsync(id));
+            }
+            catch (Exception ex)
+            {
+                return this.Problem(ex.ToString());
+            }
+        }
+
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateProductById(DtoProduct Product)
+        {
+            try
+            {
+                return this.Ok(await logic.UpdateProductAsync(Product));
+            }
+            catch (Exception ex)
+            {
+                return this.Problem(ex.ToString());
+            }
         }
     }
 }

@@ -4,15 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Models
+namespace Domain.DtoModels
 {
-    public class Product
+    public class DtoProvider
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Quantity { get; set; }
-        public Provider Provider { get; set; }
-        public int Write { get; set; }
-
     }
 }

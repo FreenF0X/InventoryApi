@@ -1,54 +1,85 @@
-﻿using Domain.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using DataAccess;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using System;
+using BuisnessLogic;
+using Domain.DtoModels;
 
-namespace InventoryApi.Controllers
+namespace TMS.Operations.Controllers
 {
     [ApiController]
     [Route("providers")]
-    public class ProvidersController: Controller
+    public class ProviderController : Controller
     {
-        IRepository db;
+        private readonly ProviderLogic logic;
 
-        public ProvidersController(IRepository db)
+        public ProviderController(ProviderLogic logic)
         {
-            this.db = db;
-        }
-
-        [HttpPost("{name}")]
-        public IActionResult CreateNewProvider(string name)
-        {
-            var provider = new Provider { Name = name, Products = new List<Product>() };
-            db.Create(provider);
-            db.Dispose();
-            return this.Ok("Поставщик добавлен.");
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteProvider(int id)
-        {
-            db.Delete<Provider>(id);
-            db.Dispose();
-            return this.Ok("Поставщик удален");
-        }
-
-        [HttpPost("update/{id}")]
-        public IActionResult UpdateProviderById(int id, string newName)
-        {
-            var provider = db.GetDataById<Provider>(id);
-            provider.Name = newName;
-            db.Update(id, provider);
-            db.Dispose();
-            return this.Ok("Поставщик изменен.");
+            this.logic = logic;
         }
 
         [HttpGet]
-        public IActionResult GetAllProviders()
+        public async Task<IActionResult> GetAllProviders()
         {
-            var response = db.GetDataList<Provider, List<Product>>(provider => true, p => p.Products);
-            db.Dispose();
-            return this.Ok(response);
+            try
+            {
+                return Ok(await logic.GetAllProvidersAsync());
+            }
+            catch (Exception ex)
+            {
+                return this.Problem(ex.ToString());
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProviderById(int id)
+        {
+            try
+            {
+                return this.Ok(await logic.GetProviderByIdAsync(id));
+            }
+            catch (Exception ex)
+            {
+                return this.Problem(ex.ToString());
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateNewProvider(DtoProvider Provider)
+        {
+            try
+            {
+                return this.Ok(await logic.CreateNewProviderAsync(Provider));
+            }
+            catch (Exception ex)
+            {
+                return this.Problem(ex.ToString());
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProvider(int id)
+        {
+            try
+            {
+                return this.Ok(await logic.DeleteProviderAsync(id));
+            }
+            catch (Exception ex)
+            {
+                return this.Problem(ex.ToString());
+            }
+        }
+
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateProviderById(DtoProvider Provider)
+        {
+            try
+            {
+                return this.Ok(await logic.UpdateProviderAsync(Provider));
+            }
+            catch (Exception ex)
+            {
+                return this.Problem(ex.ToString());
+            }
         }
     }
 }
